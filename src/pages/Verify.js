@@ -7,7 +7,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { QrReader } from "react-qr-reader";
+import QrReader from 'react-qr-scanner';
 
 import { collection, query, where } from "firebase/firestore";
 import { database } from "../utils/FirebaseInfo";
@@ -55,19 +55,19 @@ export default function Verify() {
           </Typography>
           <Box component="form" noValidate sx={{ mt: 1 }}>
             <QrReader
-              onResult={(result, error) => {
+              onScan={(result) => {
                 if (!!result) {
                   const q = query(verfRef, where("hash", "==", result?.text));
                   if (!q) {
                     setData(<CheckIcon />, "Voto OK");
                   }
                 }
-
-                if (!!error) {
-                  setData(<CloseIcon />, "Error Voto")
-                  console.info(error);
-                }
               }}
+              onError={(error) => {  
+                setData(<CloseIcon />, "Error Voto")
+                console.info(error);
+              }
+            }
               style={{ width: "100%" }}
             />
             <p>{data}</p>
